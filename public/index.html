@@ -31,6 +31,9 @@
       #settings-dialog select:focus { outline:2px solid rgba(2,89,64,0.4); outline-offset:2px; }
       #settings-dialog input[type="checkbox"] { accent-color:#025940; width:1.125rem; height:1.125rem; }
       #settings-dialog label span { color:#025940; font-weight:600; }
+      /* Selection overlay for drag path */
+      .cell-hover { background:#B6E3C3 !important; }
+      .cell-start { background:#9fdab3 !important; }
     </style>
   </head>
   <body class="min-h-screen bg-brand-sand/40 text-brand-charcoal">
@@ -504,12 +507,12 @@
         let selecting = false;
         let start = null;
         let hoveredCells = [];
-        const clearHover = () => { for (const el of hoveredCells) el.classList.remove('bg-brand-mint'); hoveredCells = []; };
+        const clearHover = () => { for (const el of hoveredCells) { el.classList.remove('cell-hover'); el.classList.remove('cell-start'); } hoveredCells = []; };
         const getCell = (x, y) => gridEl.querySelector(`button[data-x="${x}"][data-y="${y}"]`);
         const normalizeDir = (dx, dy) => { if (dx === 0 && dy === 0) return { dx: 0, dy: 0 }; const ndx = dx === 0 ? 0 : dx > 0 ? 1 : -1; const ndy = dy === 0 ? 0 : dy > 0 ? 1 : -1; return { dx: ndx, dy: ndy }; };
         const computePath = (sx, sy, ex, ey) => { const dir = normalizeDir(ex - sx, ey - sy); if (dir.dx === 0 && dir.dy === 0) return []; const path = []; let x = sx, y = sy; while (x !== ex || y !== ey) { x += dir.dx; y += dir.dy; path.push({ x, y }); if (path.length > 50) break; } return [{ x: sx, y: sy }, ...path]; };
-        const onDown = (e) => { const target = e.target.closest('button[data-x]'); if (!target) return; selecting = true; start = { x: Number(target.dataset.x), y: Number(target.dataset.y) }; clearHover(); if (!target.classList.contains('cell-found')) { target.classList.add('bg-brand-mint'); } hoveredCells.push(target); Sound.click(); };
-        const onMove = (e) => { if (!selecting || !start) return; const target = e.target.closest('button[data-x]'); if (!target) return; const end = { x: Number(target.dataset.x), y: Number(target.dataset.y) }; clearHover(); const path = computePath(start.x, start.y, end.x, end.y); for (const p of path) { const cell = getCell(p.x, p.y); if (cell && !cell.classList.contains('cell-found')) { cell.classList.add('bg-brand-mint'); hoveredCells.push(cell); } } };
+        const onDown = (e) => { const target = e.target.closest('button[data-x]'); if (!target) return; selecting = true; start = { x: Number(target.dataset.x), y: Number(target.dataset.y) }; clearHover(); if (!target.classList.contains('cell-found')) { target.classList.add('cell-start'); } hoveredCells.push(target); Sound.click(); };
+        const onMove = (e) => { if (!selecting || !start) return; const target = e.target.closest('button[data-x]'); if (!target) return; const end = { x: Number(target.dataset.x), y: Number(target.dataset.y) }; clearHover(); const path = computePath(start.x, start.y, end.x, end.y); for (const p of path) { const cell = getCell(p.x, p.y); if (cell && !cell.classList.contains('cell-found')) { if (p.x === start.x && p.y === start.y) { cell.classList.add('cell-start'); } else { cell.classList.add('cell-hover'); } hoveredCells.push(cell); } } };
         const onUp = () => {
           if (!selecting || !start) return; selecting = false;
           const letters = hoveredCells.map((el) => el.textContent).join('');
@@ -518,7 +521,7 @@
           for (const key of Object.keys(state.wordPlacements)) { const word = key; if (word === letters || word === reversed) { matchedKey = word; break; } }
           if (matchedKey && !state.found.has(matchedKey)) {
             state.found.add(matchedKey);
-            for (const el of hoveredCells) { el.classList.add('bg-brand','text-white','cell-found'); el.classList.remove('bg-brand-mint'); }
+            for (const el of hoveredCells) { el.classList.add('bg-brand','text-white','cell-found'); el.classList.remove('cell-hover'); el.classList.remove('cell-start'); }
             elements.progressCount().textContent = String(state.found.size);
             liveAnnounce('Word found');
             updateScoreOnWord(state);
@@ -602,7 +605,8 @@
                 const cell = elements.grid().querySelector(`button[data-x="${x}"][data-y="${y}"]`);
                 if (cell) {
                   cell.classList.add('bg-brand','text-white','cell-found');
-                  cell.classList.remove('bg-brand-mint');
+                  cell.classList.remove('cell-hover');
+                  cell.classList.remove('cell-start');
                 }
               });
             }
