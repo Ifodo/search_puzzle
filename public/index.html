@@ -38,6 +38,9 @@
       .prize-icon { width:28px; height:28px; border-radius:9999px; display:flex; align-items:center; justify-content:center; background:#EAF7EF; color:#025940; font-size:16px; }
       /* Light green borders for NHF and WhatsApp CTAs */
       #cta-nhf, #cta-whatsapp, #win-cta-2, #win-cta-3 { border:1px solid #B6E3C3; }
+      /* Prize reminder animation */
+      #prize-reminder { border:1px solid #B6E3C3; animation: prizeGlow 2.5s ease-in-out infinite; }
+      @keyframes prizeGlow { 0% { box-shadow: 0 0 0 rgba(2,89,64,0.0);} 50% { box-shadow: 0 10px 26px rgba(2,89,64,0.18);} 100% { box-shadow: 0 0 0 rgba(2,89,64,0.0);} }
       /* Selection overlay for drag path */
       .cell-hover { background:#B6E3C3 !important; }
       .cell-start { background:#9fdab3 !important; }
@@ -130,6 +133,15 @@
                 <a class="btn-primary focus-ring" href="#" id="cta-listings" target="_blank" rel="noopener">Visit IGetHouse</a>
                 <a class="btn-ghost focus-ring text-brand hover:bg-brand-mint/30" href="#" id="cta-nhf" target="_blank" rel="noopener">Check Your NHF Options</a>
                 <a class="btn-ghost focus-ring text-brand hover:bg-brand-mint/30" href="#" id="cta-whatsapp" target="_blank" rel="noopener">Chat on WhatsApp<br/>with Biola Salami</a>
+              </div>
+            </div>
+            <div id="prize-reminder" class="card p-4 bg-white">
+              <div class="flex items-start gap-3">
+                <div class="prize-icon">⏱️</div>
+                <div class="flex-1">
+                  <div class="font-semibold text-brand">Win a Prize on Hard!</div>
+                  <div class="text-sm text-gray-600">Finish Hard mode within 5 minutes to win a prize from IGetHouse. Give it a try!</div>
+                </div>
               </div>
             </div>
           </aside>
@@ -784,6 +796,9 @@
         if (state.timerEnabled) startTimer(state);
         attachSelectionHandlers({ ...state, foundView: state.found });
         wireHintAndRestart(state);
+        // Toggle prize reminder visibility for Hard only
+        const reminder = document.getElementById('prize-reminder');
+        if (reminder) reminder.style.display = state.difficulty === 'hard' ? 'block' : 'none';
         // Coach popup: only schedule inactivity (no immediate popup)
         wireCoachClose();
         scheduleCoachInactivity(state);
