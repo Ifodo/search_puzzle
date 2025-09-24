@@ -100,7 +100,7 @@
               <span id="difficulty-badge" class="px-2 py-0.5 rounded-full border border-gray-200 text-xs text-brand bg-white">Medium</span>
             </div>
             <div class="mt-1">
-              <button id="btn-reveal" class="btn-ghost focus-ring text-brand hover:bg-brand-mint/30 hidden" title="Reveal all words (Easy only)">Reveal All</button>
+              <button id="btn-reveal" class="btn-ghost focus-ring text-brand hover:bg-brand-mint/30 hidden" title="Reveal all words">Reveal All</button>
             </div>
             <div class="mt-auto flex items-center gap-2">
               <button id="btn-back" class="btn-primary focus-ring" aria-label="Back to categories">Back</button>
@@ -718,9 +718,10 @@
         const restartBtn = elements.restartBtn();
         const revealBtn = document.getElementById('btn-reveal');
         if (revealBtn) {
-          revealBtn.classList.toggle('hidden', state.difficulty !== 'easy');
+          // Enable Reveal All on Easy and Hard for simulation
+          revealBtn.classList.toggle('hidden', !(state.difficulty === 'easy' || state.difficulty === 'hard'));
           revealBtn.onclick = () => {
-            if (state.difficulty !== 'easy') return;
+            if (!(state.difficulty === 'easy' || state.difficulty === 'hard')) return;
             // Ensure totals reflect placed words
             const placedCount = Object.keys(state.wordPlacements).length;
             if (state.targetWordCount !== placedCount) {
