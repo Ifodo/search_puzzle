@@ -44,7 +44,7 @@
       @keyframes prizePulse { 0% { transform: scale(1); border-color:#B6E3C3; } 50% { transform: scale(1.02); border-color:#8FD9B0; } 100% { transform: scale(1); border-color:#B6E3C3; } }
       #prize-reminder .prize-icon { animation: iconBounce 1.8s ease-in-out infinite; }
       @keyframes iconBounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-4px); } }
-      #prize-reminder .prize-elig-badge { position:absolute; top:8px; right:10px; background:#EAF7EF; color:#025940; border:1px solid #B6E3C3; border-radius:9999px; padding:4px 10px; font-weight:700; font-size:.75rem; animation: badgeBlink 1.4s ease-in-out infinite; }
+      #prize-reminder .prize-elig-badge { display:inline-block; background:#EAF7EF; color:#025940; border:1px solid #B6E3C3; border-radius:9999px; padding:4px 10px; font-weight:700; font-size:.75rem; margin-bottom:6px; animation: badgeBlink 1.4s ease-in-out infinite; }
       @keyframes badgeBlink { 0%, 100% { opacity:0.6; transform: translateY(0);} 50% { opacity:1; transform: translateY(-2px);} }
       /* Selection overlay for drag path */
       .cell-hover { background:#B6E3C3 !important; }
@@ -142,7 +142,7 @@
             </div>
             <div id="prize-reminder" class="card p-4 bg-white">
               <div class="prize-elig-badge">Finish under 5 min</div>
-              <div class="flex items-start gap-3">
+              <div class="flex items-start gap-3 mt-1">
                 <div class="prize-icon">⏱️</div>
                 <div class="flex-1">
                   <div class="font-semibold text-brand">Win a Prize on Hard!</div>
