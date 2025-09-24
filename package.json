@@ -1,0 +1,14 @@
+{
+  "name": "iget-house-search-puzzle",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Mobile-first word search puzzle game for IGetHouse (frontend-only).",
+  "license": "MIT",
+  "scripts": {
+    "dev": "npx tailwindcss -i ./src/styles/tailwind.css -o ./public/assets/tailwind.css --watch",
+    "build": "npx tailwindcss -i ./src/styles/tailwind.css -o ./public/assets/tailwind.css --minify"
+  },
+  "devDependencies": {
+    "tailwindcss": "^3.4.10"
+  }
+} 

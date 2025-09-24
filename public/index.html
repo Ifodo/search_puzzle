@@ -31,9 +31,21 @@
       #settings-dialog select:focus { outline:2px solid rgba(2,89,64,0.4); outline-offset:2px; }
       #settings-dialog input[type="checkbox"] { accent-color:#025940; width:1.125rem; height:1.125rem; }
       #settings-dialog label span { color:#025940; font-weight:600; }
+      /* Prizes dialog theming */
+      #prizes-dialog::backdrop { background: rgba(31,41,55,0.45); }
+      .prize-badge { display:inline-flex; align-items:center; gap:8px; padding:8px 12px; border-radius:9999px; background:#F1FBF4; color:#025940; border:1px solid #B6E3C3; font-weight:600; font-size:.9rem; }
+      .prize-item { display:flex; align-items:flex-start; gap:10px; padding:10px 12px; border-radius:12px; background:#ffffff; border:1px solid #E5F3EA; }
+      .prize-icon { width:28px; height:28px; border-radius:9999px; display:flex; align-items:center; justify-content:center; background:#EAF7EF; color:#025940; font-size:16px; }
       /* Selection overlay for drag path */
       .cell-hover { background:#B6E3C3 !important; }
       .cell-start { background:#9fdab3 !important; }
+      /* Coach popup (round, question-like) */
+      #coach-pop { position:fixed; left:50%; top:50%; transform:translate(-50%, -50%) scale(.96); width:260px; height:260px; border-radius:9999px; background:#025940; color:#ffffff; border:2px solid #B6E3C3; box-shadow:0 12px 30px rgba(0,0,0,0.18); display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:18px; z-index:9999; opacity:0; pointer-events:none; transition:opacity .2s ease, transform .2s ease; }
+      #coach-pop.show { opacity:1; transform:translate(-50%, -50%) scale(1); pointer-events:auto; }
+      #coach-pop .qmark { font-size:48px; line-height:1; margin-bottom:8px; color:#ffffff; }
+      #coach-pop .msg { font-size:14px; color:#ffffff; }
+      #coach-pop .close { position:absolute; right:10px; top:10px; border:0; background:#025940; color:#ffffff; width:28px; height:28px; border-radius:9999px; cursor:pointer; }
+      #coach-pop::after { content:""; position:absolute; bottom:-14px; left:50%; transform:translateX(-50%); width:0; height:0; border-left:12px solid transparent; border-right:12px solid transparent; border-top:14px solid #B6E3C3; }
     </style>
   </head>
   <body class="min-h-screen bg-brand-sand/40 text-brand-charcoal">
@@ -140,6 +152,48 @@
       </form>
     </dialog>
 
+    <dialog id="prizes-dialog" class="rounded-2xl p-0 w-[min(92vw,560px)]">
+      <form method="dialog" class="card p-0 overflow-hidden">
+        <div class="bg-gradient-to-r from-brand via-brand to-emerald-600 text-white px-6 py-5">
+          <div class="flex items-center gap-3">
+            <div class="prize-icon" style="background: rgba(255,255,255,.2); color:#fff;">🏆</div>
+            <div>
+              <h2 class="text-xl font-bold leading-tight">Play Hard to Win Amazing Prizes</h2>
+              <p class="text-sm opacity-90">Push your skills on Hard mode for a chance to win.</p>
+            </div>
+          </div>
+          <div class="mt-3">
+            <span class="prize-badge">Hard Mode Rewards</span>
+          </div>
+        </div>
+        <div class="p-5 grid gap-3 bg-white">
+          <div class="prize-item">
+            <div class="prize-icon">🎨</div>
+            <div class="text-brand font-semibold">Personalised Home Décor Moodboard</div>
+          </div>
+          <div class="prize-item">
+            <div class="prize-icon">🏡</div>
+            <div class="text-brand font-semibold">'My Dream Home'</div>
+          </div>
+          <div class="prize-item">
+            <div class="prize-icon">📦</div>
+            <div class="text-brand font-semibold">Property Investment Starter Kit (Digital Pack + ₦50k Voucher)</div>
+          </div>
+          <div class="prize-item">
+            <div class="prize-icon">🧭</div>
+            <div class="text-brand font-semibold">1-on-1 Real Estate Coaching Session</div>
+          </div>
+          <div class="prize-item">
+            <div class="prize-icon">📸</div>
+            <div class="text-brand font-semibold">Free Photoshoot of Your New Home purchased on our platform</div>
+          </div>
+          <div class="mt-2 grid sm:grid-cols-2 gap-2">
+            <button id="btn-prize-hard" class="btn-primary focus-ring">Play Hard</button>
+            <button id="btn-prize-easy" value="cancel" class="btn-ghost focus-ring text-brand hover:bg-brand-mint/30">Continue with Easy</button>
+          </div>
+        </div>
+      </form>
+    </dialog>
     <dialog id="settings-dialog" class="rounded-2xl p-0 w-[min(92vw,480px)]">
       <form method="dialog" class="card p-5 space-y-4">
         <h2 class="text-lg font-semibold text-brand">Settings</h2>
@@ -169,6 +223,11 @@
 
     <div aria-live="polite" aria-atomic="true" class="sr-only" id="live-region"></div>
     <div id="tip-toast" role="dialog" aria-modal="true" aria-label="Game tip" tabindex="-1"></div>
+    <div id="coach-pop" role="dialog" aria-modal="true" aria-label="Coach message">
+      <button class="close" id="coach-close" aria-label="Close">×</button>
+      <div class="qmark">❓</div>
+      <div class="msg" id="coach-msg"></div>
+    </div>
 
     <script>
       // Words data (no fetch)
@@ -238,6 +297,63 @@
           'Semi-detached homes share one wall; detached share none.',
           'Terraced houses are aligned in a row with shared walls.'
         ]
+      };
+
+      // Coach messages (gamified encouragement)
+      const CoachMessages = [
+        'Try scanning the grid slowly—start from the corners.',
+        'Look for unique letters like Q, X or Z and trace lines.',
+        'Short words are quickest wins. Get a streak going!',
+        'Drag in straight lines: horizontal, vertical, or diagonal.',
+        'Spot repeated letters and connect the dots.',
+        'Breathe. Re-focus. The next word is right there!',
+        'Hint: start with a category term you know well.'
+      ];
+      const pickCoachMessage = (rand) => CoachMessages[Math.floor((rand ? rand() : Math.random()) * CoachMessages.length)];
+      const isCoachVisible = () => {
+        const box = document.getElementById('coach-pop');
+        return !!box && box.classList.contains('show');
+      };
+      const showCoach = (text) => {
+        const box = document.getElementById('coach-pop');
+        const msg = document.getElementById('coach-msg');
+        if (!box || !msg) return;
+        msg.textContent = text;
+        try { document.body.appendChild(box); } catch {}
+        box.classList.add('show');
+        box.style.opacity = '1';
+        box.style.pointerEvents = 'auto';
+        box.style.transform = 'translate(-50%, -50%) scale(1)';
+        const btn = document.getElementById('coach-close');
+        if (btn) btn.onclick = hideCoach;
+      };
+      const hideCoach = () => {
+        const box = document.getElementById('coach-pop');
+        if (!box) return;
+        box.classList.remove('show');
+        box.style.opacity = '0';
+        box.style.pointerEvents = 'none';
+        box.style.transform = 'translate(-50%, -50%) scale(.96)';
+      };
+      const clearCoachTimer = (state) => { if (state && state.coachTimer) { clearTimeout(state.coachTimer); state.coachTimer = null; } if (state && state.coachFallbackTimer) { clearTimeout(state.coachFallbackTimer); state.coachFallbackTimer = null; } };
+      const triggerCoachOnLaunch = (state) => {
+        // No-op: initial popup on game load is disabled
+        return;
+      };
+      const scheduleCoachInactivity = (state) => {
+        clearCoachTimer(state);
+        // If popup is currently visible, do not queue another
+        if (isCoachVisible()) return;
+        state.coachTimer = setTimeout(() => {
+          // Only show if still no word and popup not visible
+          if (state && state.found && state.found.size === 0 && !isCoachVisible()) {
+            showCoach(pickCoachMessage(state.rand));
+          }
+        }, 20000);
+      };
+      const wireCoachClose = () => {
+        const btn = document.getElementById('coach-close');
+        if (btn) btn.onclick = () => { hideCoach(); if (typeof current !== 'undefined' && current && current.found && current.found.size === 0) scheduleCoachInactivity(current); };
       };
 
       const getTipsFor = (categoryKey) => Tips[categoryKey] || Tips.general;
@@ -347,9 +463,14 @@
             btn.addEventListener('click', async (e) => {
               e.stopPropagation();
               const diff = btn.getAttribute('data-diff');
-              // Update global state and settings UI
+              // If Easy is chosen, show prizes dialog first
+              if (diff === 'easy') {
+                try { state.difficulty = 'easy'; if (typeof difficultySelect !== 'undefined') difficultySelect.value = 'easy'; } catch {}
+                if (typeof openPrizesDialog === 'function') openPrizesDialog({ categoryKey: c.key, startOnChoice: true });
+                return;
+              }
+              // Otherwise proceed immediately
               try { state.difficulty = diff; if (typeof difficultySelect !== 'undefined') difficultySelect.value = diff; } catch {}
-              // Start quick play immediately at chosen difficulty
               showGame();
               await startQuickPlay(c.key);
             });
@@ -511,8 +632,8 @@
         const getCell = (x, y) => gridEl.querySelector(`button[data-x="${x}"][data-y="${y}"]`);
         const normalizeDir = (dx, dy) => { if (dx === 0 && dy === 0) return { dx: 0, dy: 0 }; const ndx = dx === 0 ? 0 : dx > 0 ? 1 : -1; const ndy = dy === 0 ? 0 : dy > 0 ? 1 : -1; return { dx: ndx, dy: ndy }; };
         const computePath = (sx, sy, ex, ey) => { const dir = normalizeDir(ex - sx, ey - sy); if (dir.dx === 0 && dir.dy === 0) return []; const path = []; let x = sx, y = sy; while (x !== ex || y !== ey) { x += dir.dx; y += dir.dy; path.push({ x, y }); if (path.length > 50) break; } return [{ x: sx, y: sy }, ...path]; };
-        const onDown = (e) => { const target = e.target.closest('button[data-x]'); if (!target) return; selecting = true; start = { x: Number(target.dataset.x), y: Number(target.dataset.y) }; clearHover(); if (!target.classList.contains('cell-found')) { target.classList.add('cell-start'); } hoveredCells.push(target); Sound.click(); };
-        const onMove = (e) => { if (!selecting || !start) return; const target = e.target.closest('button[data-x]'); if (!target) return; const end = { x: Number(target.dataset.x), y: Number(target.dataset.y) }; clearHover(); const path = computePath(start.x, start.y, end.x, end.y); for (const p of path) { const cell = getCell(p.x, p.y); if (cell && !cell.classList.contains('cell-found')) { if (p.x === start.x && p.y === start.y) { cell.classList.add('cell-start'); } else { cell.classList.add('cell-hover'); } hoveredCells.push(cell); } } };
+        const onDown = (e) => { const target = e.target.closest('button[data-x]'); if (!target) return; selecting = true; start = { x: Number(target.dataset.x), y: Number(target.dataset.y) }; clearHover(); if (!target.classList.contains('cell-found')) { target.classList.add('cell-start'); } hoveredCells.push(target); Sound.click(); scheduleCoachInactivity(state); };
+        const onMove = (e) => { if (!selecting || !start) return; const target = e.target.closest('button[data-x]'); if (!target) return; const end = { x: Number(target.dataset.x), y: Number(target.dataset.y) }; clearHover(); const path = computePath(start.x, start.y, end.x, end.y); for (const p of path) { const cell = getCell(p.x, p.y); if (cell && !cell.classList.contains('cell-found')) { if (p.x === start.x && p.y === start.y) { cell.classList.add('cell-start'); } else { cell.classList.add('cell-hover'); } hoveredCells.push(cell); } } scheduleCoachInactivity(state); };
         const onUp = () => {
           if (!selecting || !start) return; selecting = false;
           const letters = hoveredCells.map((el) => el.textContent).join('');
@@ -524,6 +645,9 @@
             for (const el of hoveredCells) { el.classList.add('bg-brand','text-white','cell-found'); el.classList.remove('cell-hover'); el.classList.remove('cell-start'); }
             elements.progressCount().textContent = String(state.found.size);
             liveAnnounce('Word found');
+            // Once a word is found, hide and stop coach prompts
+            hideCoach();
+            clearCoachTimer(state);
             updateScoreOnWord(state);
             renderWordList(state.originalWords, state.foundView);
             if (state.found.size % 3 === 0) { const arr = getTipsFor(state.categoryKey); if (arr.length) { state.lastTipIndex = (state.lastTipIndex + 1) % arr.length; showTip(arr[state.lastTipIndex]); } }
@@ -531,6 +655,8 @@
             checkCompletion(state);
           }
           clearHover(); start = null;
+          // Re-arm timer after interaction if popup is not visible
+          scheduleCoachInactivity(state);
         };
         gridEl.addEventListener('mousedown', onDown);
         gridEl.addEventListener('mousemove', onMove);
@@ -559,7 +685,7 @@
         const wordPlacements = {};
         for (const [w, pos] of puzzle.wordPlacements.entries()) wordPlacements[w] = pos;
         const hintsAllowed = difficulty === 'easy' ? 6 : difficulty === 'medium' ? 4 : 2;
-        return { categoryKey, difficulty, timerEnabled, rand, originalWords, puzzle, wordPlacements, targetWordCount: originalWords.length, found, foundView, timerStart: 0, timerInterval: null, lastWordAt: 0, score: 0, combo: 0, hintsUsed: 0, hintsAllowed, lastTipIndex: -1, isDaily, restart: () => { renderGame(current); } };
+        return { categoryKey, difficulty, timerEnabled, rand, originalWords, puzzle, wordPlacements, targetWordCount: originalWords.length, found, foundView, timerStart: 0, timerInterval: null, lastWordAt: 0, score: 0, combo: 0, hintsUsed: 0, hintsAllowed, lastTipIndex: -1, isDaily, coachTimer: null, hasShownCoachInitial: false, hasShownCoach10s: false, restart: () => { renderGame(current); } };
       };
 
       const renderGame = (state) => {
@@ -580,6 +706,9 @@
         if (state.timerEnabled) startTimer(state);
         attachSelectionHandlers({ ...state, foundView: state.found });
         wireHintAndRestart(state);
+        // Coach popup: only schedule inactivity (no immediate popup)
+        wireCoachClose();
+        scheduleCoachInactivity(state);
       };
 
       const wireHintAndRestart = (state) => {
@@ -632,11 +761,17 @@
           if (cell) { cell.classList.add('animate-pulse', 'ring-2', 'ring-brand'); setTimeout(() => cell.classList.remove('animate-pulse', 'ring-2', 'ring-brand'), 1500); }
         };
         restartBtn.onclick = async () => {
-          try { if (current?.isDaily) { await startDailyChallengeFromHome(); } else if (current) { await startQuickPlay(current.categoryKey); } } catch (e) { console.error('Restart failed', e); }
+          try {
+            // Reset coach on restart
+            hideCoach();
+            clearCoachTimer(current);
+            if (current?.isDaily) { await startDailyChallengeFromHome(); }
+            else if (current) { await startQuickPlay(current.categoryKey); }
+          } catch (e) { console.error('Restart failed', e); }
         };
         const btnBack = document.getElementById('btn-back');
         if (btnBack) {
-          btnBack.onclick = () => { stopTimerIfRunning(current); showHome(); };
+          btnBack.onclick = () => { hideCoach(); clearCoachTimer(current); stopTimerIfRunning(current); showHome(); };
         }
       };
 
@@ -656,14 +791,14 @@
       const timerEnabledCheckbox = document.getElementById('timer-enabled');
       const soundEnabledCheckbox = document.getElementById('sound-enabled');
 
-      const state = { difficulty: 'medium', timerEnabled: true, soundEnabled: false };
+      const state = { difficulty: 'easy', timerEnabled: true, soundEnabled: false };
       let current = null;
 
       const showHome = () => { stopTimerIfRunning(current); homeView.classList.remove('hidden'); gameView.classList.add('hidden'); };
       const showGame = () => { homeView.classList.add('hidden'); gameView.classList.remove('hidden'); };
       btnHome.addEventListener('click', showHome);
       const btnBackGlobal = document.getElementById('btn-back');
-      if (btnBackGlobal) { btnBackGlobal.addEventListener('click', () => { stopTimerIfRunning(current); showHome(); }); }
+      if (btnBackGlobal) { btnBackGlobal.addEventListener('click', () => { hideCoach(); clearCoachTimer(current); stopTimerIfRunning(current); showHome(); }); }
       btnSettings.addEventListener('click', () => settingsDialog.showModal());
       settingsDialog.addEventListener('close', () => {
         state.difficulty = difficultySelect.value;
@@ -697,6 +832,10 @@
         const randFinal = createRng(seedFinal);
         current = createRuntimeState({ categoryKey, difficulty: state.difficulty, timerEnabled: state.timerEnabled, rand: randFinal, originalWords: display, puzzle, isDaily: false });
         renderGame(current);
+        // Ensure coach popup is scheduled and shown even if initial hook missed
+        wireCoachClose();
+        triggerCoachOnLaunch(current);
+        scheduleCoachInactivity(current);
       };
 
       const startDailyChallengeFromHome = async () => {
@@ -724,6 +863,10 @@
         const randFinal = createRng(seedFinal);
         current = createRuntimeState({ categoryKey, difficulty: state.difficulty, timerEnabled: state.timerEnabled, rand: randFinal, originalWords: display, puzzle, isDaily: true });
         renderGame(current);
+        // Ensure coach popup is scheduled and shown even if initial hook missed
+        wireCoachClose();
+        triggerCoachOnLaunch(current);
+        scheduleCoachInactivity(current);
       };
 
       btnDaily.addEventListener('click', async () => {
@@ -732,8 +875,44 @@
 
       window.addEventListener('DOMContentLoaded', async () => {
         loadSettingsFromStorage();
+        // Force default to Easy on each load per requirement
+        try { state.difficulty = 'easy'; if (typeof difficultySelect !== 'undefined') difficultySelect.value = 'easy'; } catch {}
         syncSettingsUI();
         await loadCategories(async (category) => { showGame(); await startQuickPlay(category); });
+        // Wire prizes dialog behavior
+        const prizesDialog = document.getElementById('prizes-dialog');
+        const btnPrizeHard = document.getElementById('btn-prize-hard');
+        const btnPrizeEasy = document.getElementById('btn-prize-easy');
+        window.openPrizesDialog = ({ categoryKey = '', startOnChoice = false } = {}) => {
+          if (!prizesDialog) return;
+          prizesDialog.dataset.categoryKey = categoryKey || '';
+          prizesDialog.dataset.start = startOnChoice ? '1' : '0';
+          try { prizesDialog.showModal(); } catch {}
+        };
+        if (btnPrizeHard) btnPrizeHard.onclick = async () => {
+          try {
+            if (prizesDialog) prizesDialog.close();
+            state.difficulty = 'hard';
+            if (typeof difficultySelect !== 'undefined') difficultySelect.value = 'hard';
+            if (prizesDialog && prizesDialog.dataset.start === '1') {
+              const cat = prizesDialog.dataset.categoryKey;
+              if (cat) { showGame(); await startQuickPlay(cat); }
+            }
+          } catch {}
+        };
+        if (btnPrizeEasy) btnPrizeEasy.onclick = async () => {
+          try {
+            if (prizesDialog) prizesDialog.close();
+            state.difficulty = 'easy';
+            if (typeof difficultySelect !== 'undefined') difficultySelect.value = 'easy';
+            if (prizesDialog && prizesDialog.dataset.start === '1') {
+              const cat = prizesDialog.dataset.categoryKey;
+              if (cat) { showGame(); await startQuickPlay(cat); }
+            }
+          } catch {}
+        };
+        // Show popup on load
+        if (typeof openPrizesDialog === 'function') openPrizesDialog({ startOnChoice: false });
         // Wire result modal CTAs to external links
         const winCta1 = document.getElementById('win-cta-1');
         const winCta2 = document.getElementById('win-cta-2');
