@@ -154,6 +154,27 @@
       </form>
     </dialog>
 
+    <dialog id="hard-results-modal" class="rounded-2xl p-0 w-[min(92vw,520px)]">
+      <form method="dialog" class="card p-0 overflow-hidden">
+        <div class="bg-brand text-white px-6 py-5">
+          <h2 class="text-xl font-semibold">🎯 Hard Mode Complete!</h2>
+          <p class="text-sm opacity-90">You pushed your limits on Hard.</p>
+        </div>
+        <div class="p-5 grid gap-3">
+          <div class="text-sm text-gray-600">Time: <span id="hard-final-time">00:00</span> • Score: <span id="hard-final-score">0</span></div>
+          <div id="hard-eligibility" class="text-brand font-semibold"></div>
+          <div class="card p-3 bg-white border border-gray-100 rounded-xl">
+            <div class="text-sm text-gray-600">Your prize</div>
+            <div id="hard-prize" class="text-lg font-semibold text-brand">—</div>
+          </div>
+          <div class="grid sm:grid-cols-2 gap-2 mt-2">
+            <button id="hard-claim-wa" class="btn-ghost focus-ring text-brand hover:bg-brand-mint/30" type="button">Claim via WhatsApp</button>
+            <button id="hard-btn-play-again" value="cancel" class="btn-primary focus-ring">Play Again</button>
+          </div>
+        </div>
+      </form>
+    </dialog>
+
     <dialog id="prizes-dialog" class="rounded-2xl p-0 w-[min(92vw,560px)]">
       <form method="dialog" class="card p-0 overflow-hidden">
         <div class="bg-gradient-to-r from-brand via-brand to-emerald-600 text-white px-6 py-5">
@@ -380,6 +401,15 @@
         nhfInfo: 'https://www.fmbn.gov.ng/',
         whatsapp: 'https://wa.me/2349165226722?text=Hi%20Biola%20Salami%2C%20I%20just%20finished%20the%20word%20puzzle%20on%20IGetHouse!'
       };
+
+      // Hard mode prizes
+      const HardPrizes = [
+        'Personalised Home Décor Moodboard',
+        "'My Dream Home'",
+        'Property Investment Starter Kit (Digital Pack + ₦50k Voucher)',
+        '1-on-1 Real Estate Coaching Session',
+        'Free Photoshoot of Your New Home purchased on our platform'
+      ];
 
       // Utils
       const normalizeWord = (w) => w.replace(/[^A-Za-z0-9]/g, '').toUpperCase();
@@ -679,7 +709,53 @@
       const stopTimer = (state) => { if (state.timerInterval) clearInterval(state.timerInterval); state.timerInterval = null; const secs = Math.floor((performance.now() - state.timerStart) / 1000); return secs; };
       const stopTimerIfRunning = (state) => { if (state && state.timerInterval) { clearInterval(state.timerInterval); state.timerInterval = null; } };
       const updateScoreOnWord = (state) => { const diffMult = state.difficulty === 'easy' ? 1.0 : state.difficulty === 'medium' ? 1.3 : 1.6; const now = performance.now(); const secondsSinceLast = state.lastWordAt ? (now - state.lastWordAt) / 1000 : 999; state.lastWordAt = now; let delta = Math.floor(100 * diffMult); const timeBonus = Math.max(0, 50 - Math.floor(secondsSinceLast)); delta += timeBonus; if (secondsSinceLast < 15) state.combo += 10; else state.combo = 0; delta += state.combo; state.score += delta; elements.score().textContent = String(state.score); };
-      const checkCompletion = (state) => { if (state.found.size >= state.targetWordCount) { const secs = stopTimer(state); let final = state.score; if (!state.timerEnabled) final = Math.floor(final * 0.9); final = Math.floor(final * (1 - 0.15 * state.hintsUsed)); elements.finalTime().textContent = timeToMMSS(secs); elements.finalScore().textContent = String(final); let streak = Number(localStorage.getItem('igh_streak') || '0'); const last = localStorage.getItem('igh_streak_last'); const today = todayYYYYMMDD(); if (state.isDaily) { if (last && last !== today) streak += 1; if (!last) streak = 1; localStorage.setItem('igh_streak', String(streak)); localStorage.setItem('igh_streak_last', today); } elements.finalStreak().textContent = String(streak || 0); Sound.win(); elements.resultsModal().showModal(); } };
+      const checkCompletion = (state) => {
+        if (state.found.size >= state.targetWordCount) {
+          const secs = stopTimer(state);
+          let final = state.score;
+          if (!state.timerEnabled) final = Math.floor(final * 0.9);
+          final = Math.floor(final * (1 - 0.15 * state.hintsUsed));
+          // Branch: Hard mode gets special prize modal
+          if (state.difficulty === 'hard') {
+            const hardTimeEl = document.getElementById('hard-final-time');
+            const hardScoreEl = document.getElementById('hard-final-score');
+            const hardEligEl = document.getElementById('hard-eligibility');
+            const hardPrizeEl = document.getElementById('hard-prize');
+            const hardModal = document.getElementById('hard-results-modal');
+            if (hardTimeEl) hardTimeEl.textContent = timeToMMSS(secs);
+            if (hardScoreEl) hardScoreEl.textContent = String(final);
+            const eligible = secs <= 300; // 5 minutes
+            if (hardEligEl) hardEligEl.textContent = eligible ? '✅ Eligible: Completed under 5 minutes.' : '❌ Not eligible: Complete within 5 minutes to claim prizes.';
+            // Shuffle prizes and pick one
+            const shuffled = [...HardPrizes];
+            shuffleInPlace(shuffled, () => Math.random());
+            const picked = shuffled[0] || HardPrizes[0];
+            if (hardPrizeEl) hardPrizeEl.textContent = eligible ? picked : 'Play again faster to unlock a prize.';
+            Sound.win();
+            if (hardModal && hardModal.showModal) hardModal.showModal();
+            const claimBtn = document.getElementById('hard-claim-wa');
+            if (claimBtn) claimBtn.onclick = () => { window.open(BrandLinks.whatsapp, '_blank'); };
+            const playAgainBtn = document.getElementById('hard-btn-play-again');
+            if (playAgainBtn) playAgainBtn.onclick = () => { if (hardModal && hardModal.close) hardModal.close(); if (current) current.restart(); };
+            return;
+          }
+          // Default modal for Easy/Medium
+          elements.finalTime().textContent = timeToMMSS(secs);
+          elements.finalScore().textContent = String(final);
+          let streak = Number(localStorage.getItem('igh_streak') || '0');
+          const last = localStorage.getItem('igh_streak_last');
+          const today = todayYYYYMMDD();
+          if (state.isDaily) {
+            if (last && last !== today) streak += 1;
+            if (!last) streak = 1;
+            localStorage.setItem('igh_streak', String(streak));
+            localStorage.setItem('igh_streak_last', today);
+          }
+          elements.finalStreak().textContent = String(streak || 0);
+          Sound.win();
+          elements.resultsModal().showModal();
+        }
+      };
 
       const createRuntimeState = ({ categoryKey, difficulty, timerEnabled, rand, originalWords, puzzle, isDaily }) => {
         const found = new Set();
@@ -923,6 +999,9 @@
         if (winCta2) { winCta2.onclick = () => { window.open(BrandLinks.nhfInfo, '_blank'); }; }
         const winCta3 = document.getElementById('win-cta-3');
         if (winCta3) { winCta3.onclick = () => { window.open(BrandLinks.whatsapp, '_blank'); }; }
+        // Wire hard modal static elements if needed later
+        const hardClaim = document.getElementById('hard-claim-wa');
+        if (hardClaim) hardClaim.onclick = () => { window.open(BrandLinks.whatsapp, '_blank'); };
       });
     </script>
   </body>
