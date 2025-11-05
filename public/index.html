@@ -1,4 +1,4 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="en">
   <head>
     <meta charset="utf-8" />
@@ -77,7 +77,7 @@
       <section class="card p-5">
         <div class="flex items-center justify-between gap-4">
           <div>
-            <h2 class="text-xl font-semibold text-brand">Play today’s Daily Challenge</h2>
+            <h2 class="text-xl font-semibold text-brand">Play todayâ€™s Daily Challenge</h2>
             <p class="text-sm text-gray-600">Same puzzle for everyone. Come back daily to build your streak.</p>
           </div>
           <button id="btn-daily" class="btn-primary focus-ring">Play Daily</button>
@@ -101,7 +101,7 @@
             <ul id="word-list" class="grid grid-cols-2 gap-2 text-sm"></ul>
             <div class="text-sm text-gray-700 font-semibold">
               <span>Category:</span>
-              <span id="category-name" class="text-brand font-semibold">—</span>
+              <span id="category-name" class="text-brand font-semibold">â€”</span>
             </div>
             <div class="flex items-center gap-2 text-xs text-gray-600">
               <span class="font-medium">Difficulty:</span>
@@ -143,7 +143,7 @@
             <div id="prize-reminder" class="card p-4 bg-white">
               <div class="prize-elig-badge">Finish under 5 min</div>
               <div class="flex items-start gap-3 mt-1">
-                <div class="prize-icon">⏱️</div>
+                <div class="prize-icon">â±ï¸</div>
                 <div class="flex-1">
                   <div class="font-semibold text-brand">Win a Prize on Hard!</div>
                   <div class="text-sm text-gray-600">Finish Hard mode within 5 minutes to win a prize from IGetHouse. Give it a try!</div>
@@ -157,8 +157,8 @@
 
     <dialog id="results-modal" class="rounded-2xl p-0 w-[min(90vw,420px)]">
       <form method="dialog" class="card p-4">
-        <h2 class="text-xl font-semibold text-brand">🎉 You did it!</h2>
-        <p class="text-sm text-gray-600">Time: <span id="final-time">00:00</span> • Score: <span id="final-score">0</span> • Streak: <span id="final-streak">0</span></p>
+        <h2 class="text-xl font-semibold text-brand">ðŸŽ‰ You did it!</h2>
+        <p class="text-sm text-gray-600">Time: <span id="final-time">00:00</span> â€¢ Score: <span id="final-score">0</span> â€¢ Streak: <span id="final-streak">0</span></p>
         <div class="mt-4 grid gap-2">
           <button id="win-cta-1" class="btn-primary">Visit IGetHouse</button>
           <button id="win-cta-2" class="btn-ghost text-brand hover:bg-brand-mint/30">Check Your NHF Options</button>
@@ -175,15 +175,15 @@
     <dialog id="hard-results-modal" class="rounded-2xl p-0 w-[min(92vw,520px)]">
       <form method="dialog" class="card p-0 overflow-hidden">
         <div class="bg-brand text-white px-6 py-5">
-          <h2 class="text-xl font-semibold">🎯 Hard Mode Complete!</h2>
+          <h2 class="text-xl font-semibold">ðŸŽ¯ Hard Mode Complete!</h2>
           <p class="text-sm opacity-90">You pushed your limits on Hard.</p>
         </div>
         <div class="p-5 grid gap-3">
-          <div class="text-sm text-gray-600">Time: <span id="hard-final-time">00:00</span> • Score: <span id="hard-final-score">0</span></div>
+          <div class="text-sm text-gray-600">Time: <span id="hard-final-time">00:00</span> â€¢ Score: <span id="hard-final-score">0</span></div>
           <div id="hard-eligibility" class="text-brand font-semibold"></div>
           <div class="card p-3 bg-white border border-gray-100 rounded-xl">
             <div class="text-sm text-gray-600">Your prize</div>
-            <div id="hard-prize" class="text-lg font-semibold text-brand">—</div>
+            <div id="hard-prize" class="text-lg font-semibold text-brand">â€”</div>
           </div>
           <div class="grid sm:grid-cols-2 gap-2 mt-2">
             <button id="hard-claim-wa" class="btn-ghost focus-ring text-brand hover:bg-brand-mint/30" type="button">Claim via WhatsApp</button>
@@ -197,7 +197,7 @@
       <form method="dialog" class="card p-0 overflow-hidden">
         <div class="bg-gradient-to-r from-brand via-brand to-emerald-600 text-white px-6 py-5">
           <div class="flex items-center gap-3">
-            <div class="prize-icon" style="background: rgba(255,255,255,.2); color:#fff;">🏆</div>
+            <div class="prize-icon" style="background: rgba(255,255,255,.2); color:#fff;">ðŸ†</div>
             <div>
               <h2 class="text-xl font-bold leading-tight">Play Hard to Win Amazing Prizes</h2>
               <p class="text-sm opacity-90">Push your skills on Hard mode for a chance to win.</p>
@@ -209,23 +209,23 @@
         </div>
         <div class="p-5 grid gap-3 bg-white">
           <div class="prize-item">
-            <div class="prize-icon">🎨</div>
-            <div class="text-brand font-semibold">Personalised Home Décor Moodboard</div>
+            <div class="prize-icon">ðŸŽ¨</div>
+            <div class="text-brand font-semibold">Personalised Home DÃ©cor Moodboard</div>
           </div>
           <div class="prize-item">
-            <div class="prize-icon">🏡</div>
+            <div class="prize-icon">ðŸ¡</div>
             <div class="text-brand font-semibold">'My Dream Home'</div>
           </div>
           <div class="prize-item">
-            <div class="prize-icon">📦</div>
-            <div class="text-brand font-semibold">Property Investment Starter Kit (Digital Pack + ₦50k Voucher)</div>
+            <div class="prize-icon">ðŸ“¦</div>
+            <div class="text-brand font-semibold">Property Investment Starter Kit (Digital Pack + â‚¦50k Voucher)</div>
           </div>
           <div class="prize-item">
-            <div class="prize-icon">🧭</div>
+            <div class="prize-icon">ðŸ§­</div>
             <div class="text-brand font-semibold">1-on-1 Real Estate Coaching Session</div>
           </div>
           <div class="prize-item">
-            <div class="prize-icon">📸</div>
+            <div class="prize-icon">ðŸ“¸</div>
             <div class="text-brand font-semibold">Free Photoshoot of Your New Home purchased on our platform</div>
           </div>
           <div class="mt-2 grid sm:grid-cols-2 gap-2">
@@ -265,8 +265,8 @@
     <div aria-live="polite" aria-atomic="true" class="sr-only" id="live-region"></div>
     <div id="tip-toast" role="dialog" aria-modal="true" aria-label="Game tip" tabindex="-1"></div>
     <div id="coach-pop" role="dialog" aria-modal="true" aria-label="Coach message">
-      <button class="close" id="coach-close" aria-label="Close">×</button>
-      <div class="qmark">❓</div>
+      <button class="close" id="coach-close" aria-label="Close">Ã—</button>
+      <div class="qmark">â“</div>
       <div class="msg" id="coach-msg"></div>
     </div>
 
@@ -342,7 +342,7 @@
 
       // Coach messages (gamified encouragement)
       const CoachMessages = [
-        'Try scanning the grid slowly—start from the corners.',
+        'Try scanning the grid slowlyâ€”start from the corners.',
         'Look for unique letters like Q, X or Z and trace lines.',
         'Short words are quickest wins. Get a streak going!',
         'Drag in straight lines: horizontal, vertical, or diagonal.',
@@ -401,7 +401,7 @@
       const showTip = (text) => {
         const toast = document.getElementById('tip-toast');
         if (!toast) return;
-        toast.innerHTML = `<span>${text}</span><button class="close-btn" id="tip-close" aria-label="Close tip" title="Close">×</button>`;
+        toast.innerHTML = `<span>${text}</span><button class="close-btn" id="tip-close" aria-label="Close tip" title="Close">Ã—</button>`;
         toast.classList.add('show');
         const closer = document.getElementById('tip-close');
         const hide = () => { toast.classList.remove('show'); };
@@ -419,12 +419,24 @@
         nhfInfo: 'https://www.fmbn.gov.ng/',
         whatsapp: 'https://wa.me/2349165226722?text=Hi%20miss%20Smart%2C%20I%20just%20finished%20the%20word%20puzzle%20on%20IGetHouse!'
       };
+      const openWhatsAppWithMessage = (message) => {
+        const text = String(message ?? '');
+        try {
+          const url = new URL(BrandLinks.whatsapp);
+          url.searchParams.set('text', text);
+          window.open(url.toString(), '_blank');
+        } catch {
+          const base = BrandLinks.whatsapp.split('?')[0];
+          const encoded = encodeURIComponent(text);
+          window.open(`${base}?text=${encoded}`, '_blank');
+        }
+      };
 
       // Hard mode prizes
       const HardPrizes = [
-        'Personalised Home Décor Moodboard',
+        'Personalised Home DÃ©cor Moodboard',
         "'My Dream Home'",
-        'Property Investment Starter Kit (Digital Pack + ₦50k Voucher)',
+        'Property Investment Starter Kit (Digital Pack + â‚¦50k Voucher)',
         '1-on-1 Real Estate Coaching Session',
         'Free Photoshoot of Your New Home purchased on our platform'
       ];
@@ -476,16 +488,16 @@
         const grid = document.getElementById('categories-grid');
         grid.innerHTML = '';
         const Categories = [
-          { key: 'propertyTypes', name: 'Property Types', icon: '🏢', desc: 'Apartment, Duplex, Penthouse, ...' },
-          { key: 'homeInteriorDecor', name: 'Home Interior & Decor', icon: '🛋️', desc: 'Kitchen, Sofa, Lighting, ...' },
-          { key: 'mortgageFinance', name: 'Mortgage & Finance', icon: '💸', desc: 'Mortgage, Equity, Interest, ...' },
-          { key: 'legalDocumentation', name: 'Legal & Documentation', icon: '⚖️', desc: 'Deed, Title, Survey, ...' },
-          { key: 'constructionMaterials', name: 'Construction & Materials', icon: '🏗️', desc: 'Concrete, Rebar, Beam, ...' },
-          { key: 'maintenanceUtilities', name: 'Maintenance & Utilities', icon: '🔧', desc: 'Generator, Inverter, Solar, ...' },
-          { key: 'stakeholdersRoles', name: 'Stakeholders & Roles', icon: '👷', desc: 'Realtor, Surveyor, Architect, ...' },
-          { key: 'locationsNigeria', name: 'Locations (Nigeria)', icon: '📍', desc: 'Lagos, Abuja, Ibadan, ...' },
-          { key: 'investmentMetrics', name: 'Investment & Metrics', icon: '📈', desc: 'ROI, Yield, Cashflow, ...' },
-          { key: 'smartHomeTech', name: 'Smart Home & Tech', icon: '🏠', desc: 'Sensor, Camera, Hub, ...' }
+          { key: 'propertyTypes', name: 'Property Types', icon: 'ðŸ¢', desc: 'Apartment, Duplex, Penthouse, ...' },
+          { key: 'homeInteriorDecor', name: 'Home Interior & Decor', icon: 'ðŸ›‹ï¸', desc: 'Kitchen, Sofa, Lighting, ...' },
+          { key: 'mortgageFinance', name: 'Mortgage & Finance', icon: 'ðŸ’¸', desc: 'Mortgage, Equity, Interest, ...' },
+          { key: 'legalDocumentation', name: 'Legal & Documentation', icon: 'âš–ï¸', desc: 'Deed, Title, Survey, ...' },
+          { key: 'constructionMaterials', name: 'Construction & Materials', icon: 'ðŸ—ï¸', desc: 'Concrete, Rebar, Beam, ...' },
+          { key: 'maintenanceUtilities', name: 'Maintenance & Utilities', icon: 'ðŸ”§', desc: 'Generator, Inverter, Solar, ...' },
+          { key: 'stakeholdersRoles', name: 'Stakeholders & Roles', icon: 'ðŸ‘·', desc: 'Realtor, Surveyor, Architect, ...' },
+          { key: 'locationsNigeria', name: 'Locations (Nigeria)', icon: 'ðŸ“', desc: 'Lagos, Abuja, Ibadan, ...' },
+          { key: 'investmentMetrics', name: 'Investment & Metrics', icon: 'ðŸ“ˆ', desc: 'ROI, Yield, Cashflow, ...' },
+          { key: 'smartHomeTech', name: 'Smart Home & Tech', icon: 'ðŸ ', desc: 'Sensor, Camera, Hub, ...' }
         ];
         for (const c of Categories) {
           const card = document.createElement('button');
@@ -743,16 +755,27 @@
             if (hardTimeEl) hardTimeEl.textContent = timeToMMSS(secs);
             if (hardScoreEl) hardScoreEl.textContent = String(final);
             const eligible = secs <= 300; // 5 minutes
-            if (hardEligEl) hardEligEl.textContent = eligible ? '✅ Eligible: Completed under 5 minutes.' : '❌ Not eligible: Complete within 5 minutes to claim prizes.';
+            if (hardEligEl) hardEligEl.textContent = eligible ? 'âœ… Eligible: Completed under 5 minutes.' : 'âŒ Not eligible: Complete within 5 minutes to claim prizes.';
             // Shuffle prizes and pick one
             const shuffled = [...HardPrizes];
             shuffleInPlace(shuffled, () => Math.random());
-            const picked = shuffled[0] || HardPrizes[0];
-            if (hardPrizeEl) hardPrizeEl.textContent = eligible ? picked : 'Play again faster to unlock a prize.';
+            const pickedPrize = shuffled[0] || HardPrizes[0];
+            if (hardPrizeEl) hardPrizeEl.textContent = eligible ? pickedPrize : 'Play again faster to unlock a prize.';
             Sound.win();
             if (hardModal && hardModal.showModal) hardModal.showModal();
             const claimBtn = document.getElementById('hard-claim-wa');
-            if (claimBtn) claimBtn.onclick = () => { window.open(BrandLinks.whatsapp, '_blank'); };
+            if (claimBtn) {
+              claimBtn.onclick = () => {
+                if (!eligible) {
+                  alert('Complete Hard mode within 5 minutes to unlock a prize you can claim.');
+                  return;
+                }
+                const categoryName = (CategoryNames && CategoryNames[state.categoryKey]) || state.categoryKey;
+                const timeStr = timeToMMSS(secs);
+                const message = `Hi miss Smart, I just completed the IGetHouse word puzzle on Hard (${categoryName}) in ${timeStr} with a score of ${final}. I unlocked the prize: ${pickedPrize}. Please help me claim it.`;
+                openWhatsAppWithMessage(message);
+              };
+            }
             const playAgainBtn = document.getElementById('hard-btn-play-again');
             if (playAgainBtn) playAgainBtn.onclick = () => { if (hardModal && hardModal.close) hardModal.close(); if (current) current.restart(); };
             return;
@@ -1027,3 +1050,8 @@
     </script>
   </body>
 </html> 
+
+
+
+
+
