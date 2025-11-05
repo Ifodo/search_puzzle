@@ -8,8 +8,24 @@
     <link rel="stylesheet" href="./assets/tailwind.css" />
     <style>
       #game-scale { transform: scale(0.85); transform-origin: top center; }
-      @media (max-width: 480px) { #game-scale { transform: scale(0.8); } }
-      @media (max-width: 360px) { #game-scale { transform: scale(0.75); } }
+      @media (max-width: 768px) { 
+        #game-scale { transform: scale(0.95); }
+        #view-game { padding: 0.5rem !important; }
+        .card { padding: 0.75rem !important; }
+      }
+      @media (max-width: 480px) { 
+        #game-scale { transform: scale(0.85); }
+        #view-game .grid { gap: 0.5rem !important; }
+        #view-game button { padding: 0.5rem 0.75rem !important; font-size: 0.875rem !important; }
+        #grid { gap: 2px !important; }
+        #word-list { grid-template-columns: repeat(1, minmax(0, 1fr)) !important; }
+      }
+      @media (max-width: 360px) { 
+        #game-scale { transform: scale(0.75); }
+        header { padding: 0.5rem !important; }
+        header h1 { font-size: 1rem !important; }
+        header p { font-size: 0.625rem !important; }
+      }
       /* Ensure header logo stays small even if Tailwind is not rebuilt */
       #brand-logo { height: 48px; width: auto; object-fit: contain; display: block; }
       /* Difficulty chip hover using brand palette without Tailwind rebuild */
@@ -101,7 +117,7 @@
             <ul id="word-list" class="grid grid-cols-2 gap-2 text-sm"></ul>
             <div class="text-sm text-gray-700 font-semibold">
               <span>Category:</span>
-              <span id="category-name" class="text-brand font-semibold">â€”</span>
+              <span id="category-name" class="text-brand font-semibold">—</span>
             </div>
             <div class="flex items-center gap-2 text-xs text-gray-600">
               <span class="font-medium">Difficulty:</span>
@@ -110,17 +126,17 @@
             <div class="mt-1">
               <button id="btn-reveal" class="btn-ghost focus-ring text-brand hover:bg-brand-mint/30 hidden" title="Reveal all words">Reveal All</button>
             </div>
-            <div class="mt-auto flex items-center gap-2">
-              <button id="btn-back" class="btn-primary focus-ring" aria-label="Back to categories">Back</button>
-              <button id="btn-hint" class="btn-primary focus-ring" aria-live="polite">Hint (2)</button>
-              <button id="btn-restart" class="btn-primary focus-ring">Restart</button>
+            <div class="mt-auto flex flex-wrap items-center gap-2">
+              <button id="btn-back" class="btn-primary focus-ring flex-1 min-w-[80px]" aria-label="Back to categories">Back</button>
+              <button id="btn-hint" class="btn-primary focus-ring flex-1 min-w-[80px]" aria-live="polite">Hint (2)</button>
+              <button id="btn-restart" class="btn-primary focus-ring flex-1 min-w-[80px]">Restart</button>
             </div>
             <div class="text-xs text-brand font-semibold">Tips appear as you play.</div>
             <div id="tips-panel" class="text-sm font-semibold"></div>
           </aside>
 
           <section class="lg:col-span-6 card p-4 flex flex-col gap-3" aria-labelledby="grid-title">
-            <div class="flex items-center justify-between">
+            <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
               <h2 id="grid-title" class="font-semibold text-brand">Find all the words</h2>
               <div class="flex items-center gap-3 text-sm">
                 <div>Time: <span id="timer">00:00</span></div>
@@ -209,23 +225,23 @@
         </div>
         <div class="p-5 grid gap-3 bg-white">
           <div class="prize-item">
-            <div class="prize-icon">ðŸŽ¨</div>
-            <div class="text-brand font-semibold">Personalised Home DÃ©cor Moodboard</div>
+            <div class="prize-icon">🎨</div>
+            <div class="text-brand font-semibold">Personalised Home Décor Moodboard</div>
           </div>
           <div class="prize-item">
             <div class="prize-icon">ðŸ¡</div>
             <div class="text-brand font-semibold">'My Dream Home'</div>
           </div>
           <div class="prize-item">
-            <div class="prize-icon">ðŸ“¦</div>
-            <div class="text-brand font-semibold">Property Investment Starter Kit (Digital Pack + â‚¦50k Voucher)</div>
+            <div class="prize-icon">📦</div>
+            <div class="text-brand font-semibold">Property Investment Starter Kit (Digital Pack + ₦50k Voucher)</div>
           </div>
           <div class="prize-item">
-            <div class="prize-icon">ðŸ§­</div>
+            <div class="prize-icon">🧭</div>
             <div class="text-brand font-semibold">1-on-1 Real Estate Coaching Session</div>
           </div>
           <div class="prize-item">
-            <div class="prize-icon">ðŸ“¸</div>
+            <div class="prize-icon">📸</div>
             <div class="text-brand font-semibold">Free Photoshoot of Your New Home purchased on our platform</div>
           </div>
           <div class="mt-2 grid sm:grid-cols-2 gap-2">
