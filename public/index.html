@@ -243,9 +243,6 @@
               <span class="font-medium">Difficulty:</span>
               <span id="difficulty-badge" class="px-2 py-0.5 rounded-full border border-gray-200 text-xs text-brand bg-white">Medium</span>
             </div>
-            <div class="mt-1">
-              <button id="btn-reveal" class="btn-ghost focus-ring text-brand hover:bg-brand-mint/30 hidden" title="Reveal all words">Reveal All</button>
-            </div>
             <div class="mt-auto flex flex-wrap items-center gap-2">
               <button id="btn-back" class="btn-primary focus-ring flex-1 min-w-[80px]" aria-label="Back to categories">Back</button>
               <button id="btn-hint" class="btn-primary focus-ring flex-1 min-w-[80px]" aria-live="polite">Hint (2)</button>
@@ -1018,39 +1015,6 @@
       const wireHintAndRestart = (state) => {
         const hintBtn = elements.hintBtn();
         const restartBtn = elements.restartBtn();
-        const revealBtn = document.getElementById('btn-reveal');
-        if (revealBtn) {
-          // Enable Reveal All on Easy and Hard for simulation
-          revealBtn.classList.toggle('hidden', !(state.difficulty === 'easy' || state.difficulty === 'hard'));
-          revealBtn.onclick = () => {
-            if (!(state.difficulty === 'easy' || state.difficulty === 'hard')) return;
-            // Ensure totals reflect placed words
-            const placedCount = Object.keys(state.wordPlacements).length;
-            if (state.targetWordCount !== placedCount) {
-              state.targetWordCount = placedCount;
-              elements.progressTotal().textContent = String(placedCount);
-            }
-            // Reveal all words visually and mark them found
-            for (const word of Object.keys(state.wordPlacements)) {
-              if (state.found.has(word)) continue;
-              state.found.add(word);
-              const positions = state.wordPlacements[word] || [];
-              positions.forEach(({ x, y }) => {
-                const cell = elements.grid().querySelector(`button[data-x="${x}"][data-y="${y}"]`);
-                if (cell) {
-                  cell.classList.add('bg-brand','text-white','cell-found');
-                  cell.classList.remove('cell-hover');
-                  cell.classList.remove('cell-start');
-                }
-              });
-            }
-            elements.progressCount().textContent = String(state.found.size);
-            // Update word list UI
-            renderWordList(state.originalWords, state.found);
-            // Trigger completion
-            checkCompletion(state);
-          };
-        }
         const updateHintLabel = () => { const remaining = Math.max(0, (state.hintsAllowed ?? 2) - state.hintsUsed); hintBtn.textContent = `Hint (${remaining})`; };
         updateHintLabel();
         hintBtn.onclick = () => {
