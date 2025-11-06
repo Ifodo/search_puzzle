@@ -827,7 +827,15 @@
         let selecting = false;
         let start = null;
         let hoveredCells = [];
-        const clearHover = () => { for (const el of hoveredCells) { el.classList.remove('cell-hover'); el.classList.remove('cell-start'); } hoveredCells = []; };
+        const clearHover = () => { 
+          // Clear all cells with hover classes, not just those in array
+          gridEl.querySelectorAll('.cell-hover, .cell-start').forEach((el) => {
+            if (!el.classList.contains('cell-found')) {
+              el.classList.remove('cell-hover', 'cell-start');
+            }
+          });
+          hoveredCells = []; 
+        };
         const getCell = (x, y) => gridEl.querySelector(`button[data-x="${x}"][data-y="${y}"]`);
         const normalizeDir = (dx, dy) => { if (dx === 0 && dy === 0) return { dx: 0, dy: 0 }; const ndx = dx === 0 ? 0 : dx > 0 ? 1 : -1; const ndy = dy === 0 ? 0 : dy > 0 ? 1 : -1; return { dx: ndx, dy: ndy }; };
         const computePath = (sx, sy, ex, ey) => { const dir = normalizeDir(ex - sx, ey - sy); if (dir.dx === 0 && dir.dy === 0) return []; const path = []; let x = sx, y = sy; while (x !== ex || y !== ey) { x += dir.dx; y += dir.dy; path.push({ x, y }); if (path.length > 50) break; } return [{ x: sx, y: sy }, ...path]; };
@@ -841,7 +849,17 @@
           for (const key of Object.keys(state.wordPlacements)) { const word = key; if (word === letters || word === reversed) { matchedKey = word; break; } }
           if (matchedKey && !state.found.has(matchedKey)) {
             state.found.add(matchedKey);
-            for (const el of hoveredCells) { el.classList.add('bg-brand','text-white','cell-found'); el.classList.remove('cell-hover'); el.classList.remove('cell-start'); }
+            // Mark all selected cells as found and remove hover states
+            for (const el of hoveredCells) { 
+              el.classList.add('bg-brand','text-white','cell-found'); 
+              el.classList.remove('cell-hover', 'cell-start'); 
+            }
+            // Also clear any remaining hover states from the grid
+            gridEl.querySelectorAll('.cell-hover, .cell-start').forEach((el) => {
+              if (!el.classList.contains('cell-found')) {
+                el.classList.remove('cell-hover', 'cell-start');
+              }
+            });
             elements.progressCount().textContent = String(state.found.size);
             liveAnnounce('Word found');
             // Once a word is found, hide and stop coach prompts
@@ -852,8 +870,12 @@
             if (state.found.size % 3 === 0) { const arr = getTipsFor(state.categoryKey); if (arr.length) { state.lastTipIndex = (state.lastTipIndex + 1) % arr.length; showTip(arr[state.lastTipIndex]); } }
             Sound.success();
             checkCompletion(state);
+          } else {
+            // If no match, still clear hover states
+            clearHover();
           }
-          clearHover(); start = null;
+          hoveredCells = [];
+          start = null;
           // Re-arm timer after interaction if popup is not visible
           scheduleCoachInactivity(state);
         };
