@@ -34,7 +34,7 @@ export const DifficultyConfig = {
 };
 
 export const BrandLinks = {
-  listingsLagos: 'https://igethouse.com',
-  nhfInfo: 'https://igethouse.com',
+  listingsLagos: 'https://igethouse.ng',
+  nhfInfo: 'https://igethouse.ng',
   whatsapp: 'https://wa.me/2348012345678?text=Hi%20IGetHouse%2C%20I%20just%20finished%20the%20word%20puzzle!'
 }; 
